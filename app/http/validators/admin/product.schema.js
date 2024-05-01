@@ -28,7 +28,7 @@ const addProductSchema = Joi.object({
   offPrice: Joi.number()
     .allow(0)
     .error(createError.BadRequest("Incorrect offPrice")),
-  typecar: Joi.string()
+    typecars: Joi.string()
     .required()
     .error(createError.BadRequest("Incorrect typecar")),
   capacity: Joi.number()

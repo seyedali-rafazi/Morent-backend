@@ -20,7 +20,7 @@ const ProductSchema = new mongoose.Schema(
     rating: { type: Number, required: true, default: 0 },
     numReviews: { type: Number, required: true, default: 0 },
     likes: { type: [ObjectId], ref: "User", default: [] },
-    typecar: { type: String, required: true },
+    typecars: { type: String, required: true },
     capacity: { type: Number, required: true },
     steering: { type: String, required: true },
     gasoline: { type: Number, required: true },
