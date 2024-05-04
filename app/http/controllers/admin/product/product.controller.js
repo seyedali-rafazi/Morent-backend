@@ -62,7 +62,7 @@ class ProductController extends Controller {
   async getListOfProducts(req, res) {
     let dbQuery = {};
     const user = req.user;
-    const { search, carGroup, sort } = req.query;
+    const { search, carGroup, sort, capacite, offPrice } = req.query;
     if (search) dbQuery["$text"] = { $search: search };
 
     if (carGroup) {
@@ -79,6 +79,19 @@ class ProductController extends Controller {
       };
     }
 
+    if (capacite) {
+      const carGroupIds = [];
+      for (const item of capacite) {
+        const carGroup = await ProductModel.find({ capacity: item });
+        carGroupIds.push(...carGroup.map((product) => product._id));
+      }
+      dbQuery["_id"] = { $in: carGroupIds };
+    }
+
+    if (offPrice) {
+      dbQuery["offPrice"] = { $lte: offPrice };
+    }
+
     const sortQuery = {};
     if (!sort) sortQuery["createdAt"] = 1;
     if (sort) {
@@ -90,7 +103,7 @@ class ProductController extends Controller {
     const products = await ProductModel.find(dbQuery, {
       reviews: 0,
     })
-      .populate([{ path: "cargroup", select: { title: 1, englishTitle: 1 } }])
+      .populate([{ path: "carGroup", select: { title: 1, englishTitle: 1 } }])
       .sort(sortQuery);
 
     const transformedProducts = copyObject(products);
