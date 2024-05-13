@@ -73,7 +73,7 @@ class CarGroupController extends Controller {
 
   async removeCarGroup(req, res) {
     const { id } = req.params;
-    const carGroup = await this.checkExistCarGroup(id);
+    const carGroup = await this.checkExist(id);
     const deleteResult = await CarGroupsSchemaModel.deleteMany({
       $or: [{ _id: carGroup._id }, { parentId: carGroup._id }],
     });

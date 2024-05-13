@@ -18,5 +18,5 @@ const CarGroupsSchema = new mongoose.Schema(
 CarGroupsSchema.index({ title: "text", englishTitle: "text" });
 
 module.exports = {
-  CarGroupsSchemaModel: mongoose.model("CarGroup", CarGroupsSchema),
+  CarGroupsSchemaModel: mongoose.model("carGroup", CarGroupsSchema),
 };

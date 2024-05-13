@@ -135,8 +135,8 @@ class ProductController extends Controller {
     await this.findProductById(productId);
     const product = await ProductModel.findById(productId).populate([
       {
-        path: "cargroup",
-        model: "cargroup",
+        path: "carGroup",
+        model: "carGroup",
         select: {
           title: 1,
           icon: 1,
@@ -156,8 +156,8 @@ class ProductController extends Controller {
     const { slug } = req.params;
     const product = await ProductModel.findOne({ slug }).populate([
       {
-        path: "cargroup",
-        model: "cargroup",
+        path: "carGroup",
+        model: "carGroup",
         select: {
           title: 1,
           icon: 1,

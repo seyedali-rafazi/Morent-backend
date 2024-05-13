@@ -71,8 +71,7 @@ class userAuthController extends Controller {
     await setAccessToken(res, user);
     await setRefreshToken(res, user);
     let WELLCOME_MESSAGE = `Welcome to Morent`;
-    if (!user.isActive)
-      WELLCOME_MESSAGE = `Please complete your profile`;
+    if (!user.isActive) WELLCOME_MESSAGE = `Please complete your profile`;
 
     return res.status(HttpStatus.OK).json({
       statusCode: HttpStatus.OK,
@@ -82,7 +81,6 @@ class userAuthController extends Controller {
       },
     });
   }
-
 
   async saveUser(phoneNumber, password) {
     return await UserModel.create({
@@ -219,9 +217,9 @@ class userAuthController extends Controller {
 
     let message;
     if (user.favoriteProduct.includes(productId)) {
-      message = "به لیست مورد علاقتون اضافه شد";
+      message = "Added to you favourite list";
     } else {
-      message = "از لیست مورد علاقه شما خارج شد";
+      message = "Remove from your favourite list";
     }
 
     return res.status(HttpStatus.OK).json({

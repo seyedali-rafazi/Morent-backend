@@ -15,7 +15,11 @@ class CartController extends Controller {
     const { productId } = req.body;
     const addedProduct = await this.checkExistProduct(productId);
     const product = await this.findProductInCart(userId, productId);
+    const existProduct = await this.findProductInCart(userId, productId);
 
+    if (existProduct) {
+      throw createHttpError.InternalServerError("It exist in your Card");
+    }
     if (product) {
       const addToCartResult = await UserModel.updateOne(
         {
@@ -30,7 +34,7 @@ class CartController extends Controller {
       );
       if (addToCartResult.modifiedCount == 0)
         throw createHttpError.InternalServerError(
-          "محصول به سبد خرید اضافه نشد"
+          "Product was not added to card"
         );
     } else {
       const addToCartResult = await UserModel.updateOne(
@@ -48,17 +52,18 @@ class CartController extends Controller {
       );
       if (addToCartResult.modifiedCount == 0)
         throw createHttpError.InternalServerError(
-          "محصول به سبد خرید اضافه نشد"
+          "Product was not added to card"
         );
     }
 
     return res.status(HttpStatus.OK).json({
       statusCode: HttpStatus.OK,
       data: {
-        message: `${addedProduct.title} به سبد خرید اضافه شد`,
+        message: `Added to card ${addedProduct.title}`,
       },
     });
   }
+
   async removeFromCart(req, res) {
     const userId = req.user._id;
     const { productId } = req.body;
@@ -126,32 +131,32 @@ class CartController extends Controller {
     const { productId } = req.body;
     const removedProduct = await this.checkExistProduct(productId);
     const product = await this.findProductInCart(userId, productId);
-  
+
     if (!product) {
       throw createHttpError.BadRequest(
         `${removedProduct.title} در سبد خرید شما وجود ندارد`
       );
     }
-  
+
     const newCart = await UserModel.findOneAndUpdate(
       { _id: userId, "cart.products.productId": productId },
       { $pull: { "cart.products": { productId } } },
       { new: true }
     );
-  
+
     if (newCart.modifiedCount == 0) {
       throw createHttpError.InternalServerError("محصول از سبد خرید حذف نشد");
     }
-  
+
     const message = "محصول از سبد خرید حذف شد";
-  
+
     if (newCart.cart.products.length === 0) {
       await UserModel.updateOne(
         { _id: userId },
         { $unset: { "cart.coupon": 1 } }
       );
     }
-  
+
     return res.status(HttpStatus.OK).json({
       statusCode: HttpStatus.OK,
       data: {
